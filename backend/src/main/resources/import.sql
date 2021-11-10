@@ -1,0 +1,1 @@
+insert into sm_employee(firstname, lastname) values ('Niklas', 'Aichinger');
