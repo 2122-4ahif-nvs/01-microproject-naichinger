@@ -1,5 +1,6 @@
 package com.naichinger.entity;
 
+import javax.json.bind.annotation.JsonbProperty;
 import javax.persistence.*;
 
 @NamedQuery(
@@ -10,7 +11,9 @@ import javax.persistence.*;
 public class Employee {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+    @JsonbProperty("firstname")
     String firstname;
+    @JsonbProperty("lastname")
     String lastname;
 
     public Employee() {

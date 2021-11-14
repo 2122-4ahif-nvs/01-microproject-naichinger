@@ -16,8 +16,8 @@ public class EmployeeRepository {
     EntityManager em;
 
     @Transactional
-    public void save(Employee employee) {
-        em.merge(employee);
+    public Employee save(Employee employee) {
+        return em.merge(employee);
     }
 
     public List<Employee> findAll() {
