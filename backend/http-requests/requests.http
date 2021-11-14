@@ -1,0 +1,11 @@
+GET http://localhost:8080/employee/findAll
+
+###
+
+POST http://localhost:8080/employee/add
+Content-Type: application/json
+
+{
+  "firstname": "Niklas",
+  "lastname": "Neudorfer"
+}
