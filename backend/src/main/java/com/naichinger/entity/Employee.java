@@ -3,13 +3,19 @@ package com.naichinger.entity;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.persistence.*;
 
-@NamedQuery(
-        name = "Employee.findAll",
-        query = "SELECT e FROM SM_EMPLOYEE e"
-)
-@Entity(name = "SM_EMPLOYEE")
+@NamedQueries({
+        @NamedQuery(
+                name = "Employee.findAll",
+                query = "SELECT e FROM Employee e"),
+        @NamedQuery(
+                name = "Employee.findById",
+                query = "SELECT e FROM Employee e where e.id=:ID")
+})
+@Entity
+@Table(name = "SM_EMPLOYEE")
 public class Employee {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @JsonbProperty("firstname")
     String firstname;
@@ -22,6 +28,10 @@ public class Employee {
     public Employee(String firstname, String lastname) {
         this.firstname = firstname;
         this.lastname = lastname;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getFirstname() {

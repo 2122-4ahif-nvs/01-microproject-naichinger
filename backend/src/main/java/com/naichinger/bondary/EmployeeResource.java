@@ -14,6 +14,8 @@ public class EmployeeResource {
 
     @Inject
     EmployeeRepository employeeRepository;
+    @Inject
+    EmployeeWebsocket employeeWebsocket;
 
     @GET
     @Path("findAll")
@@ -27,5 +29,6 @@ public class EmployeeResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public void addEmployee(Employee employee) {
         employeeRepository.save(employee);
+        employeeWebsocket.notifyEmployeeChange();
     }
 }

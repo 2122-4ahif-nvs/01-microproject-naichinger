@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import com.naichinger.entity.Employee;
-import org.hibernate.annotations.NamedNativeQuery;
 
 import java.util.List;
 
@@ -20,7 +19,20 @@ public class EmployeeRepository {
         return em.merge(employee);
     }
 
+    public Employee findById(Long id) {
+        return em.createNamedQuery("Employee.findById", Employee.class)
+                .setParameter("ID", id)
+                .getSingleResult();
+    }
+
     public List<Employee> findAll() {
-        return em.createNamedQuery("Employee.findAll",Employee.class).getResultList();
+        return em.createNamedQuery("Employee.findAll", Employee.class)
+                .getResultList();
+    }
+
+    @Transactional
+    public void removeEmployee(Long id) {
+        Employee emp = findById(id);
+        em.remove(emp);
     }
 }

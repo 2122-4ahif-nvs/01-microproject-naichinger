@@ -2,7 +2,8 @@ package com.naichinger.entity;
 
 import javax.persistence.*;
 
-@Entity(name = "SM_RECEIPT_POSITION")
+@Entity
+@Table(name = "SM_RECEIPT_POSITION")
 public class ReceiptPosition {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

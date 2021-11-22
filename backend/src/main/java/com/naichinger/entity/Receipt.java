@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
-@Entity(name = "SM_RECEIPT")
-
+@Entity
+@Table(name = "SM_RECEIPT")
 public class Receipt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
