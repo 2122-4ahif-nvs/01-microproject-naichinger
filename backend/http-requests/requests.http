@@ -9,3 +9,66 @@ Content-Type: application/json
   "firstname": "Niklas",
   "lastname": "Neudorfer"
 }
+
+###
+
+GET http://localhost:8080/employee/find/1
+
+###
+
+POST http://localhost:8080/employee/remove/1
+
+
+### GraphQL
+### Get All Employees
+
+POST http://localhost:8080/graphql
+Content-Type: application/graphql
+
+query {
+  allEmployees {
+    id,
+    firstname,
+    lastname
+  }
+}
+
+### find By Id
+
+POST http://localhost:8080/graphql
+Content-Type: application/graphql
+
+query getEmployee{
+   employee(employeeId: 1) {
+    firstname,lastname
+  }
+}
+
+### Add Employee
+
+POST http://localhost:8080/graphql
+Content-Type: application/graphql
+
+mutation addEmployee {
+  addEmployee(employee: {
+  firstname: "Peter",
+  lastname: "Hans"
+  })
+  {
+  firstname,
+  lastname
+  }
+}
+
+###
+
+POST http://localhost:8080/graphql
+Content-Type: application/graphql
+
+mutation removeEmployee {
+  removeEmployee(employeeId: 2) {
+    firstname,
+    lastname,
+    id
+  }
+}

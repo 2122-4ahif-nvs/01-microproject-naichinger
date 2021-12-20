@@ -31,8 +31,9 @@ public class EmployeeRepository {
     }
 
     @Transactional
-    public void removeEmployee(Long id) {
+    public Employee removeEmployee(Long id) {
         Employee emp = findById(id);
         em.remove(emp);
+        return emp;
     }
 }
