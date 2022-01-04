@@ -3,7 +3,10 @@ package com.naichinger.bondary;
 import com.naichinger.control.EmployeeRepository;
 import com.naichinger.control.EmployeeService;
 import com.naichinger.entity.Employee;
+import io.quarkus.qute.CheckedTemplate;
+import io.quarkus.qute.TemplateInstance;
 import org.eclipse.microprofile.graphql.*;
+import org.hibernate.sql.Template;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
@@ -20,32 +23,7 @@ import java.util.stream.Collectors;
 @Path("/employee")
 @GraphQLApi
 public class EmployeeResource {
-    public static class Result {
 
-        Result(String message) {
-            this.success = true;
-            this.message = message;
-        }
-
-        Result(Set<? extends ConstraintViolation<?>> violations) {
-            this.success = false;
-            this.message = violations.stream()
-                    .map(cv -> cv.getMessage())
-                    .collect(Collectors.joining(", "));
-        }
-
-        private String message;
-        private boolean success;
-
-        public String getMessage() {
-            return message;
-        }
-
-        public boolean isSuccess() {
-            return success;
-        }
-
-    }
     @Inject
     EmployeeRepository employeeRepository;
     @Inject
@@ -54,6 +32,17 @@ public class EmployeeResource {
     Validator validator;
     @Inject
     EmployeeService employeeService;
+
+    @CheckedTemplate
+    public static class Templates {
+        public static native TemplateInstance employee(Employee employee);
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public TemplateInstance get(@QueryParam("id") Long id) {
+        return Templates.employee(employeeRepository.findById(id));
+    }
 
     @GET
     @Path("findAll")
@@ -121,5 +110,32 @@ public class EmployeeResource {
         } catch (ConstraintViolationException e) {
             return new Result(e.getConstraintViolations());
         }
+    }
+
+    public static class Result {
+
+        Result(String message) {
+            this.success = true;
+            this.message = message;
+        }
+
+        Result(Set<? extends ConstraintViolation<?>> violations) {
+            this.success = false;
+            this.message = violations.stream()
+                    .map(cv -> cv.getMessage())
+                    .collect(Collectors.joining(", "));
+        }
+
+        private String message;
+        private boolean success;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+
     }
 }

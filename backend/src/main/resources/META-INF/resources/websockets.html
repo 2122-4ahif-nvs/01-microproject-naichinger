@@ -47,6 +47,7 @@
                 <th>firstname</th>
                 <th>lastname</th>
                 <th>remove</th>
+                <th>info</th>
             </tr>
         </table>
     </div>
@@ -72,6 +73,11 @@
                         removeEmployee(id);
                     })
                     .text("remove")))
+            .attr("id", id)
+            .append($("<td></td>")
+                .append($("<a></a>")
+                    .attr("href","/employee?id="+id)
+                    .text("info")))
             .attr("id", id)
         );
     }
@@ -117,6 +123,7 @@
                 .append($("<th></th>").text("firstname"))
                 .append($("<th></th>").text("lastname"))
                 .append($("<th></th>").text("remove"))
+                .append($("<th></th>").text("info"))
 
             data.forEach(function (obj) {
                 addEmployeeToTable(obj.id, obj.firstname, obj.lastname);
