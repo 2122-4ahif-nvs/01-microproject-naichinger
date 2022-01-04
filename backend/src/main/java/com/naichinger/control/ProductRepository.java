@@ -16,4 +16,8 @@ public class ProductRepository {
     public void save(Product product) {
         em.merge(product);
     }
+
+    public Product findAll() {
+        return null;
+    }
 }

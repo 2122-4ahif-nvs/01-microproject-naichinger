@@ -41,14 +41,8 @@
         Employee Managment
     </h1>
     <div class="row">
-        <table id="employees_table">
-            <tr>
-                <th>id</th>
-                <th>firstname</th>
-                <th>lastname</th>
-                <th>remove</th>
-            </tr>
-        </table>
+        <a href="validation.html"><h3>Validation</h3></a>
+        <a href="websockets.html"><h3>Websockets</h3></a>
     </div>
 
 </div>
@@ -57,74 +51,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.24.0/js/patternfly.min.js"></script>
 
-<script type="text/javascript">
-    var connected = false;
-    var socket;
-
-    var addEmployeeToTable = function (id, firstname, lastname) {
-        $("#employees_table").append($("<tr></tr>")
-            .append($("<td></td>").text(id))
-            .append($("<td></td>").text(firstname))
-            .append($("<td></td>").text(lastname))
-            .append($("<td></td>")
-                .append($("<button></button>")
-                    .on("click", function () {
-                        removeEmployee(id);
-                    })
-                    .text("remove")))
-            .attr("id", id)
-        );
-    }
-
-    var removeEmployee = function (id) {
-        if (connected) {
-            var value = {
-                "action": "remove",
-                "id": id
-            };
-            console.log(value);
-            socket.send(JSON.stringify(value));
-        }
-    }
-
-    $(document).ready(function () {
-        fetchEmployees();
-        connect();
-    });
-
-    var connect = function () {
-        if (!connected) {
-            socket = new WebSocket("ws://" + location.host + "/employees");
-            socket.onopen = function () {
-                connected = true;
-                console.log("Connected to the web socket");
-            };
-            socket.onmessage = function (m) {
-                console.log("Got message: " + m.data);
-                if (m.data === "updated") {
-                    fetchEmployees();
-                }
-            };
-        }
-    };
-
-    var fetchEmployees = function () {
-        $.get("employee/findAll", function (data) {
-            console.log(data);
-            $("#employees_table").empty()
-                .append($("<tr></tr>"))
-                .append($("<th></th>").text("id"))
-                .append($("<th></th>").text("firstname"))
-                .append($("<th></th>").text("lastname"))
-                .append($("<th></th>").text("remove"))
-
-            data.forEach(function (obj) {
-                addEmployeeToTable(obj.id, obj.firstname, obj.lastname);
-            });
-        });
-    }
-
-</script>
 </body>
 
 </html>

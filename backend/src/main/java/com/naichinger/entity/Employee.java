@@ -2,6 +2,7 @@ package com.naichinger.entity;
 
 import javax.json.bind.annotation.JsonbProperty;
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @NamedQueries({
         @NamedQuery(
@@ -18,8 +19,10 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @JsonbProperty("firstname")
+    @NotBlank(message="firstname may not be blank")
     String firstname;
     @JsonbProperty("lastname")
+    @NotBlank(message="lastname may not be blank")
     String lastname;
 
     public Employee() {
