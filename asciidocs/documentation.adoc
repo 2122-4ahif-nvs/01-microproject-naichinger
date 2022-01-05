@@ -1,0 +1,265 @@
+= Documentation
+niklas aichinger
+1.0.0, 2021-01-4: Supermarkt Documentation
+ifndef::imagesdir[:imagesdir: images]
+//:toc-placement!:  // prevents the generation of the doc at this position, so it can be printed afterwards
+:sourcedir: ../backend/src/main/java
+:icons: font
+:sectnums:    // Nummerierung der Überschriften / section numbering
+:toc: left
+
+//Need this blank line after ifdef, don't know why...
+ifdef::backend-html5[]
+
+// https://fontawesome.com/v4.7.0/icons/
+icon:file-text-o[link=https://raw.githubusercontent.com/htl-leonding-college/asciidoctor-docker-template/master/asciidocs/{docname}.adoc] ‏ ‏ ‎
+icon:github-square[link=https://github.com/htl-leonding-college/asciidoctor-docker-template] ‏ ‏ ‎
+icon:home[link=https://htl-leonding.github.io/]
+endif::backend-html5[]
+
+// print the toc here (not at the default position)
+//toc::[]
+
+== Hibernate Validator
+
+=== Einsatzzweck
+
+Validierung wird verwendet um Daten auf Korrektheit zu überprüfen.
+
+=== Alternativen
+
+Eine Alternative für Hibernate Validator wäre der https://commons.apache.org/proper/commons-validator/[Apache Validator].
+
+=== Anwendung
+
+Add validation annotation to properties:
+
+[source, java]
+----
+@JsonbProperty("firstname")
+@NotBlank(message="firstname may not be blank")
+String firstname;
+@JsonbProperty("lastname")
+@NotBlank(message="lastname may not be blank")
+String lastname;
+----
+
+Check parameter for validation:
+
+[source,java]
+----
+@POST
+@Mutation
+@Path("add")
+@Consumes(MediaType.APPLICATION_JSON)
+public Employee addEmployee(@Valid Employee employee) {
+    Employee emp = employeeRepository.save(employee);
+    employeeWebsocket.notifyEmployeeChange();
+    return emp;
+}
+----
+
+Use manual validator
+
+[source,java]
+----
+@Path("/manual-validation")
+@POST
+public Result tryMeManualValidation(Employee employee) {
+    Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
+    if (violations.isEmpty()) {
+        return new Result("Employee is valid! It was validated by manual validation.");
+    } else {
+        return new Result(violations);
+    }
+}
+----
+
+Use parameter validator
+
+[source,java]
+----
+@Path("/end-point-method-validation")
+@POST
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public Result tryMeEndPointMethodValidation(@Valid Employee employee) {
+    return new Result("Employee is valid! It was validated by end point method validation.");
+}
+----
+
+Use service for validation:
+
+[source,java]
+----
+//Service
+@ApplicationScoped
+public class EmployeeService {
+
+    public void validateEmployee(@Valid Employee employee) {
+        // your business logic here
+    }
+}
+
+// Resource
+@Path("/service-method-validation")
+@POST
+public Result tryMeServiceMethodValidation(Employee employee) {
+    try {
+        employeeService.validateEmployee(employee);
+        return new Result("Employee is valid! It was validated by service method validation.");
+    } catch (ConstraintViolationException e) {
+        return new Result(e.getConstraintViolations());
+    }
+}
+----
+
+== Qute
+
+=== Einsatzzweck
+
+Qute bietet die Möglichkeit Html Templates zu verwenden in die man Daten eintragen kann.
+
+=== Alternativen
+
+Alternativen wären https://velocity.apache.org/[Apache Velocity] oder https://freemarker.apache.org/[Apache FreeMarker].
+
+=== Anwendung
+
+In der EmployeeResource
+
+[source, java]
+----
+@CheckedTemplate
+public static class Templates {
+    public static native TemplateInstance employee(Employee employee, List<Receipt> receipts);
+}
+
+@GET
+@Produces(MediaType.TEXT_PLAIN)
+public TemplateInstance get(@QueryParam("id") Long id) {
+    return Templates.employee(
+            employeeRepository.findById(id),
+            employeeRepository.findReceiptsForEmployee(id));
+}
+----
+
+das template welches die Employee Felder und alle Rechnung des Employees anzeigt:
+
+[source, html]
+----
+<h1>
+    Employee Info
+</h1>
+<div class="row">
+    <h3>Firstname: {employee.firstname}</h3>
+    <h3>Lastname: {employee.lastname}</h3>
+</div>
+<div class="row">
+    <h2>Receipts</h2>
+    <table id="receipts_table">
+        <tr>
+            <th>id</th>
+            <th>amount of products</th>
+            <th>receipt</th>
+        </tr>
+        {#for receipt in receipts}
+        <tr>
+            <td>
+                {receipt.id}
+            </td>
+            <td>
+                {receipt.products.size()}
+            </td>
+            <td style="white-space: pre-wrap;">
+                <div style="font-family: monospace;">
+                {receipt.print()}
+                </div>
+            </td>
+        </tr>
+        {/for}
+    </table>
+</div>
+----
+
+== gRPC
+
+=== Einsatzzweck
+
+Mit Remote Procedure Call kann der Server am Client Funktionen ausführen.
+
+=== Alternativen
+
+Eine alternative wären WebSockets.
+
+=== Anwendung
+
+Der Service:
+
+[source,java]
+----
+@GrpcService
+public class HelloService implements Greeter {
+
+    @Override
+    public Uni<HelloReply> sayHello(HelloRequest request) {
+        return Uni.createFrom().item(() ->
+                HelloReply.newBuilder().setMessage("Hello " + request.getName()).build()
+        );
+    }
+}
+----
+
+Die Resource:
+
+[source,java]
+----
+@Path("/hello")
+public class HelloWorldResource {
+
+    @GrpcClient
+    Greeter hello;
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return "hello";
+    }
+
+    @GET
+    @Path("/{name}")
+    public Uni<String> hello(@PathParam("name") String name) {
+        return hello.sayHello(HelloRequest.newBuilder().setName(name).build())
+                .onItem().transform(HelloReply::getMessage);
+    }
+}
+----
+
+proto:
+
+[source,java]
+----
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.quarkus.example";
+option java_outer_classname = "HelloWorldProto";
+
+package helloworld;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+----
