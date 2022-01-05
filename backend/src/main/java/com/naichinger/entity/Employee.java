@@ -9,6 +9,9 @@ import javax.validation.constraints.NotBlank;
                 name = "Employee.findAll",
                 query = "SELECT e FROM Employee e"),
         @NamedQuery(
+                name = "Employee.ReceiptsOfEmployee",
+                query = "SELECT r FROM Receipt r where r.employee.id=:ID"),
+        @NamedQuery(
                 name = "Employee.findById",
                 query = "SELECT e FROM Employee e where e.id=:ID")
 })

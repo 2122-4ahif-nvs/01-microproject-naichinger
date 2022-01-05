@@ -44,6 +44,31 @@
         <h3>Firstname: {employee.firstname}</h3>
         <h3>Lastname: {employee.lastname}</h3>
     </div>
+    <div class="row">
+        <h2>Receipts</h2>
+        <table id="receipts_table">
+            <tr>
+                <th>id</th>
+                <th>amount of products</th>
+                <th>receipt</th>
+            </tr>
+            {#for receipt in receipts}
+            <tr>
+                <td>
+                    {receipt.id}
+                </td>
+                <td>
+                    {receipt.products.size()}
+                </td>
+                <td style="white-space: pre-wrap;">
+                    <div style="font-family: monospace;">
+                    {receipt.print()}
+                    </div>
+                </td>
+            </tr>
+            {/for}
+        </table>
+    </div>
 
 </div>
 

@@ -15,7 +15,7 @@ import io.quarkus.test.junit.QuarkusTest;
 public class ReceiptRepositoryTest {
 
     @Inject
-    ReceiptRepository recRepo;
+    SalesRepository salRepo;
     @Inject
     EmployeeRepository empRepo;
     @Inject
@@ -31,6 +31,6 @@ public class ReceiptRepositoryTest {
         ReceiptPosition position2 = new ReceiptPosition(product2, 2);
         receipt.addProduct(position);
         receipt.addProduct(position2);
-        recRepo.save(receipt);
+        salRepo.saveReceipt(receipt);
     }
 }

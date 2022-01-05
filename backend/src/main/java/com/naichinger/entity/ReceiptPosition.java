@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class ReceiptPosition {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     Product product;
     int amount;
 

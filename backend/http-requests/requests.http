@@ -18,6 +18,9 @@ GET http://localhost:8080/employee/find/1
 
 POST http://localhost:8080/employee/remove/1
 
+###
+
+GET http://localhost:8080/product/findAll
 
 ### GraphQL
 ### Get All Employees

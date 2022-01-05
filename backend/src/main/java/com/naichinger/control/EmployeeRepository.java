@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import com.naichinger.entity.Employee;
+import com.naichinger.entity.Receipt;
 
 import java.util.List;
 
@@ -35,5 +36,11 @@ public class EmployeeRepository {
         Employee emp = findById(id);
         em.remove(emp);
         return emp;
+    }
+
+    public List<Receipt> findReceiptsForEmployee(Long id) {
+        return em.createNamedQuery("Employee.ReceiptsOfEmployee", Receipt.class)
+                .setParameter("ID",id)
+                .getResultList();
     }
 }

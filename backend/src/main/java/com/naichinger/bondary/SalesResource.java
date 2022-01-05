@@ -1,7 +1,9 @@
 package com.naichinger.bondary;
 
 import com.naichinger.control.ProductRepository;
+import com.naichinger.control.SalesRepository;
 import com.naichinger.entity.Product;
+import com.naichinger.entity.Receipt;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -10,18 +12,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/product")
-public class ProductResource {
-
+public class SalesResource {
     @Inject
-    ProductRepository productRepository;
+    SalesRepository salesRepository;
 
     @GET
     @Path("findAll")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<Receipt> getAllReceipts() {
+        return salesRepository.findAll();
     }
-
-
 }

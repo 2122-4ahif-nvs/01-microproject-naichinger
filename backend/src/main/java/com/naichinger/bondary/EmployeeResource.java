@@ -3,6 +3,7 @@ package com.naichinger.bondary;
 import com.naichinger.control.EmployeeRepository;
 import com.naichinger.control.EmployeeService;
 import com.naichinger.entity.Employee;
+import com.naichinger.entity.Receipt;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import org.eclipse.microprofile.graphql.*;
@@ -35,13 +36,15 @@ public class EmployeeResource {
 
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance employee(Employee employee);
+        public static native TemplateInstance employee(Employee employee, List<Receipt> receipts);
     }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public TemplateInstance get(@QueryParam("id") Long id) {
-        return Templates.employee(employeeRepository.findById(id));
+        return Templates.employee(
+                employeeRepository.findById(id),
+                employeeRepository.findReceiptsForEmployee(id));
     }
 
     @GET
