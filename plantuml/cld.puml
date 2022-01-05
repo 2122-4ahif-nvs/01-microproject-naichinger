@@ -1,0 +1,27 @@
+@startuml supermarkt
+
+class Mitarbeiter {
+    - firstname: String
+    - lastname: String
+}
+
+class Rechnung {
+    - kassierer: Mitarbeiter
+}
+
+class Produkt {
+    - name: String
+    - weight: double
+}
+
+class Rechnungsposition {
+    - rechnung: Rechnung
+    - produkt: Produkt
+    - amount: int
+}
+
+Rechnungsposition "*" -left-> "1" Rechnung
+Rechnungsposition "*" -right-> "1" Produkt
+Rechnung "*" -left-> "1" Mitarbeiter
+
+@enduml
