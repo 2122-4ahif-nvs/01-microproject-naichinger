@@ -5,10 +5,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "SM_RECEIPT_POSITION")
 public class ReceiptPosition {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @ManyToOne(cascade = CascadeType.ALL)
     Product product;
+
     int amount;
 
     public ReceiptPosition(Product product, int amount) {

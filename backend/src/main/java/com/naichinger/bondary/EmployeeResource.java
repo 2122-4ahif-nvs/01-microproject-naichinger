@@ -7,7 +7,6 @@ import com.naichinger.entity.Receipt;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import org.eclipse.microprofile.graphql.*;
-import org.hibernate.sql.Template;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
@@ -16,7 +15,6 @@ import javax.validation.Valid;
 import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

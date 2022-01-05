@@ -1,6 +1,9 @@
 package com.naichinger.entity;
 
-import java.text.Format;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +21,12 @@ public class Receipt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @ManyToOne(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     Employee employee;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "fk_receipt")
     List<ReceiptPosition> products;
 
     public Receipt() {
@@ -79,7 +85,7 @@ public class Receipt {
                             rp.getProduct().name,
                             rp.getAmount(),
                             rp.getProduct().getPrice()));
-            total += rp.getAmount()*rp.getProduct().getPrice();
+            total += rp.getAmount() * rp.getProduct().getPrice();
         }
         builder.append("-".repeat(40))
                 .append("\n")
