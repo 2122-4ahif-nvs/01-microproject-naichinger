@@ -26,6 +26,7 @@ public class EmployeeRepository {
                 .getSingleResult();
     }
 
+    @Transactional //needed for Websocket, because it is accessed by another thread?
     public List<Employee> findAll() {
         return em.createNamedQuery("Employee.findAll", Employee.class)
                 .getResultList();

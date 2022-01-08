@@ -76,7 +76,7 @@
             .attr("id", id)
             .append($("<td></td>")
                 .append($("<a></a>")
-                    .attr("href","/employee?id="+id)
+                    .attr("href", "/employee?id=" + id)
                     .text("info")))
             .attr("id", id)
         );
@@ -94,7 +94,6 @@
     }
 
     $(document).ready(function () {
-        fetchEmployees();
         connect();
     });
 
@@ -106,28 +105,24 @@
                 console.log("Connected to the web socket");
             };
             socket.onmessage = function (m) {
-                console.log("Got message: " + m.data);
-                if (m.data === "updated") {
-                    fetchEmployees();
-                }
+                let jsonList = JSON.parse(m.data);
+                writeEmployeesToTable(jsonList);
             };
         }
     };
 
-    var fetchEmployees = function () {
-        $.get("employee/findAll", function (data) {
-            console.log(data);
-            $("#employees_table").empty()
-                .append($("<tr></tr>"))
-                .append($("<th></th>").text("id"))
-                .append($("<th></th>").text("firstname"))
-                .append($("<th></th>").text("lastname"))
-                .append($("<th></th>").text("remove"))
-                .append($("<th></th>").text("info"))
+    var writeEmployeesToTable = function (data) {
+        console.log(data);
+        $("#employees_table").empty()
+            .append($("<tr></tr>"))
+            .append($("<th></th>").text("id"))
+            .append($("<th></th>").text("firstname"))
+            .append($("<th></th>").text("lastname"))
+            .append($("<th></th>").text("remove"))
+            .append($("<th></th>").text("info"))
 
-            data.forEach(function (obj) {
-                addEmployeeToTable(obj.id, obj.firstname, obj.lastname);
-            });
+        data.forEach(function (obj) {
+            addEmployeeToTable(obj.id, obj.firstname, obj.lastname);
         });
     }
 

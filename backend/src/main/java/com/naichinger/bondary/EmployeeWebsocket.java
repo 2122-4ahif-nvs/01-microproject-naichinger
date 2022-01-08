@@ -1,25 +1,23 @@
 package com.naichinger.bondary;
 
 import com.naichinger.control.EmployeeRepository;
-import io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorBase;
-import io.vertx.core.json.Json;
+import com.naichinger.entity.Employee;
 import io.vertx.core.json.JsonObject;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import javax.websocket.OnOpen;
 import javax.websocket.OnClose;
-import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
-import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import javax.ws.rs.Path;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 @ServerEndpoint(value = "/employees")
 @ApplicationScoped
@@ -32,6 +30,10 @@ public class EmployeeWebsocket {
     @OnOpen
     public void onOpen(Session session) {
         sessions.add(session);
+        new Thread(() -> {
+            JsonArray arr = convertEmployeeListToJson(employeeRepository.findAll());
+            sendEmployeeToSession(session, arr.toString());
+        }).start();
     }
 
     @OnClose
@@ -48,7 +50,7 @@ public class EmployeeWebsocket {
                 Long id = jsonObject.getLong("id");
                 new Thread(() -> {
                     employeeRepository.removeEmployee(id);
-                    notifyEmployeeChange();
+                    sendAllEmployees();
                 }).start();
                 break;
             }
@@ -56,17 +58,30 @@ public class EmployeeWebsocket {
         System.out.println(message);
     }
 
-    public void notifyEmployeeChange() {
-        broadcast("updated");
+    private JsonArray convertEmployeeListToJson(List<Employee> employees) {
+        JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+
+        employees.forEach(e -> {
+            JsonObjectBuilder jsonObj = Json.createObjectBuilder();
+            jsonObj.add("id", e.getId());
+            jsonObj.add("firstname", e.getFirstname());
+            jsonObj.add("lastname", e.getLastname());
+            jsonArray.add(jsonObj);
+        });
+        return jsonArray.build();
     }
 
-    public void broadcast(String action) {
-        sessions.forEach(s -> {
-            s.getAsyncRemote().sendText(action, result -> {
-                if (result.getException() != null) {
-                    System.out.println("Unable to send message: " + result.getException());
-                }
-            });
+    public void sendAllEmployees() {
+        JsonArray arr = convertEmployeeListToJson(employeeRepository.findAll());
+        System.out.println(arr.toString());
+        sessions.forEach(s -> sendEmployeeToSession(s, arr.toString()));
+    }
+
+    private void sendEmployeeToSession(Session session, String employeeJsonArray) {
+        session.getAsyncRemote().sendText(employeeJsonArray, result -> {
+            if (result.getException() != null) {
+                System.out.println("Unable to send message: " + result.getException());
+            }
         });
     }
 }

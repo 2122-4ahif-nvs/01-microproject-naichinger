@@ -15,6 +15,8 @@ import javax.validation.Valid;
 import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -69,7 +71,7 @@ public class EmployeeResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Employee addEmployee(@Valid Employee employee) {
         Employee emp = employeeRepository.save(employee);
-        employeeWebsocket.notifyEmployeeChange();
+        employeeWebsocket.sendAllEmployees();
         return emp;
     }
 
@@ -79,7 +81,7 @@ public class EmployeeResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Employee removeEmployee(@Name("employeeId") @PathParam("id") long employeeId) {
         Employee emp = employeeRepository.removeEmployee(employeeId);
-        employeeWebsocket.notifyEmployeeChange();
+        employeeWebsocket.sendAllEmployees();
         return emp;
     }
 
