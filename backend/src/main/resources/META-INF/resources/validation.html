@@ -17,7 +17,7 @@
     </div>
 </nav>
 <div class="container-fluid">
-    <div class="row-fluid hidden" id="result">
+    <div class="row hidden" id="result">
         <br />
         <div id="suc" class="col-md-6 col-md-offset-2 toast-pf alert alert-success">
             <span class="pficon pficon-ok"></span>
@@ -128,7 +128,7 @@
             }).fail(function (jqXHR) {
                 $("#result").removeClass("hidden").show();
                 if (jqXHR.responseJSON) {
-                    $(".message").html($.map(jqXHR.responseJSON.parameterViolations, function(v){
+                    $(".message").html($.map(jqXHR.responseJSON.violations, function(v){
                         return v.message;
                     }).join(', '));
                 } else {
