@@ -1,9 +1,6 @@
 package com.naichinger.bondary;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import javax.ws.rs.GET;
@@ -32,8 +29,8 @@ public class HelloWorldResource {
     }
 
     @GET
-    @Path("/{name}")
-    public Uni<String> hello(@PathParam("name") String name) {
+    @Path("/name")
+    public Uni<String> hello(@QueryParam("name") String name) {
         return hello.sayHello(HelloRequest.newBuilder().setName(name).build())
                 .onItem().transform(HelloReply::getMessage);
     }
