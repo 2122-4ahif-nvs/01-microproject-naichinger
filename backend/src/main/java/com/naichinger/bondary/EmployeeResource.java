@@ -8,6 +8,8 @@ import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import org.eclipse.microprofile.graphql.*;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -67,6 +69,7 @@ public class EmployeeResource {
 
     @POST
     @Mutation
+    @RolesAllowed("admin")
     @Path("add")
     @Consumes(MediaType.APPLICATION_JSON)
     public Employee addEmployee(@Valid Employee employee) {
@@ -77,6 +80,7 @@ public class EmployeeResource {
 
     @POST
     @Mutation
+    @RolesAllowed("admin")
     @Path("remove/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Employee removeEmployee(@Name("employeeId") @PathParam("id") long employeeId) {

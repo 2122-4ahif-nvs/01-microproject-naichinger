@@ -3,6 +3,7 @@ GET http://localhost:8080/employee/findAll
 ###
 
 POST http://localhost:8080/employee/add
+Authorization: Basic admin admin
 Content-Type: application/json
 
 {
@@ -17,6 +18,7 @@ GET http://localhost:8080/employee/find/1
 ###
 
 POST http://localhost:8080/employee/remove/1
+Authorization: Basic admin admin
 
 ###
 
@@ -50,6 +52,7 @@ query getEmployee{
 ### Add Employee
 
 POST http://localhost:8080/graphql
+Authorization: Basic admin admin
 Content-Type: application/graphql
 
 mutation addEmployee {
@@ -66,6 +69,7 @@ mutation addEmployee {
 ###
 
 POST http://localhost:8080/graphql
+Authorization: Basic admin admin
 Content-Type: application/graphql
 
 mutation removeEmployee {
